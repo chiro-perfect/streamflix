@@ -1,0 +1,90 @@
+/*
+=================================================
+STYLES POUR LA PAGE 'MA LISTE'
+=================================================
+*/
+
+/* Réutilisons la structure de base des pages de catalogue */
+.page-container {
+    padding-top: calc(var(--header-height-mobile) + 1.5rem);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.page-header-section {
+    padding: 0 var(--padding-base);
+    margin: 1.5rem 0 2rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--gap-md);
+}
+
+.page-title {
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--color-text-primary);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+.content-section {
+    padding: 0 var(--padding-base);
+    margin-bottom: 2rem;
+}
+
+.movie-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1.5rem;
+    justify-items: center;
+}
+
+/* Message si la liste est vide */
+#empty-list-message {
+    text-align: center;
+    color: var(--color-text-secondary);
+    font-size: 1.2rem;
+    width: 100%;
+    margin-top: 4rem;
+}
+
+/*
+=================================================
+RESPONSIVENESS (@media queries)
+=================================================
+*/
+@media (min-width: 768px) {
+    .page-container {
+        padding-top: calc(var(--header-height-desktop) + 2rem);
+    }
+    
+    .page-header-section {
+        padding: 0 2rem;
+    }
+    
+    .movie-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 2rem;
+    }
+}
+
+@media (min-width: 1200px) {
+    .page-container {
+        padding-top: calc(var(--header-height-desktop) + 3vw);
+    }
+    
+    .page-header-section {
+        padding: 0 3vw;
+        margin-top: 3vw;
+    }
+
+    .content-section {
+        padding: 0 3vw;
+    }
+    
+    .movie-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 2.5rem;
+    }
+}

@@ -133,7 +133,7 @@
 /* Conteneur pour l'iframe vidéo (ratio 16:9) */
 .video-container {
     position: relative;
-    padding-bottom: 56.25%; /* Ratio 16:9 */
+    padding-bottom: 56.25%; /* ratio 16:9 */
     height: 0;
     overflow: hidden;
     margin-bottom: 1.5rem;

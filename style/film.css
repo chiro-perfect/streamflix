@@ -3,40 +3,59 @@
 STYLES POUR LA PAGE 'FILMS'
 =================================================
 */
-.page-main-content {
-    /* Décalage pour laisser de la place au header fixe */
+
+/* Contenu principal de la page, avec décalage pour le header */
+.page-container {
     padding-top: calc(var(--header-height-mobile) + 1.5rem);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
-.control-panel {
+/* Panneau de contrôle avec titre et filtres */
+.page-header-section {
     padding: 0 var(--padding-base);
-    margin-top: 1rem;
+    margin: 1.5rem 0 2rem 0;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: var(--gap-md);
 }
 
-.control-panel h2 {
-    font-size: 2rem;
+.page-title {
+    font-size: 2.2rem;
     font-weight: 900;
+    color: var(--color-text-primary);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
 }
 
-.filters {
+.filter-controls {
+    display: flex;
+    flex-wrap: wrap;
     gap: var(--gap-md);
     width: 100%;
 }
 
-.filter-select {
+/* Sélecteurs de filtres */
+#search-bar,
+#genre-filter {
     font-size: 1rem;
-    padding: 0.5rem 1rem;
+    padding: 0.6rem 1.2rem;
     color: var(--color-text-primary);
     border: none;
-    border-radius: 20px;
+    border-radius: 25px;
     outline: none;
     cursor: pointer;
     background: var(--glass-bg-card);
     flex-grow: 1;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#search-bar::placeholder {
+    color: var(--color-text-secondary);
+}
+
+#genre-filter {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -46,21 +65,69 @@ STYLES POUR LA PAGE 'FILMS'
     background-size: 1rem;
 }
 
-/* Adapte l'icône du sélecteur au thème clair */
-.theme-light .filter-select {
+.theme-light #genre-filter {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23111111'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
 }
 
-.main-grid-content {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: var(--gap-md);
-    padding: 0 var(--padding-base) 2rem var(--padding-base);
-    justify-content: center;
+/* Section de contenu */
+.content-section {
+    padding: 0 var(--padding-base);
+    margin-bottom: 2rem;
 }
 
-.main-grid-content .movie-card {
-    flex: none;
+/* Grille de films */
+.movie-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1.5rem;
+    justify-items: center;
+}
+
+/* Styles de la carte de film (réutilisés de homepage.css) */
+.movie-card {
+    position: relative;
+    width: 100%;
+    height: auto;
+    padding-bottom: 150%;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform var(--transition-duration) ease-out, box-shadow var(--transition-duration);
+    outline: 2px solid transparent;
+}
+
+.movie-card img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card-title-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: var(--gap-sm);
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+    color: var(--color-text-primary);
+    font-size: 0.8rem;
+    text-align: center;
+    opacity: 0;
+    transition: opacity var(--transition-duration);
+}
+
+.movie-card:hover, .movie-card:focus {
+    transform: scale(1.05);
+    z-index: 10;
+    box-shadow: 0 15px 30px var(--color-shadow);
+    outline: 3px solid var(--color-accent);
+}
+
+.movie-card:hover .card-title-overlay {
+    opacity: 1;
 }
 
 /*
@@ -68,34 +135,91 @@ STYLES POUR LA PAGE 'FILMS'
 RESPONSIVENESS (@media queries)
 =================================================
 */
-
-/* Tablette (min-width: 768px) */
 @media (min-width: 768px) {
-    .page-main-content {
+    .page-container {
         padding-top: calc(var(--header-height-desktop) + 2rem);
     }
-    .control-panel {
+    
+    .page-header-section {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
+        margin-top: 2rem;
     }
-    .filters {
+    
+    .filter-controls {
         width: auto;
     }
-    .main-grid-content {
+    
+    .movie-grid {
         grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 2rem;
     }
 }
 
-/* Desktop (min-width: 1200px) */
 @media (min-width: 1200px) {
-    .page-main-content {
+    .page-container {
         padding-top: calc(var(--header-height-desktop) + 3vw);
     }
-    .control-panel {
+    
+    .page-header-section {
+        padding: 0 3vw;
+        margin-top: 3vw;
+    }
+
+    .content-section {
         padding: 0 3vw;
     }
-    .main-grid-content {
-        grid-template-columns: repeat(auto-fill, minmax(15vw, 1fr));
+    
+    .movie-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 2.5rem;
+    }
+}
+
+
+/*
+=================================================
+STYLES POUR LES BOUTONS DE FILTRAGE PAR GENRE
+=================================================
+*/
+
+.genre-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.genre-button {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--color-text-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.6rem 1.2rem;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease, color 0.2s ease;
+    white-space: nowrap;
+}
+
+.genre-button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.genre-button.active {
+    background-color: var(--color-accent);
+    color: #fff;
+    border-color: var(--color-accent);
+    transform: scale(1.05);
+}
+
+/* Styles pour les petits écrans */
+@media (max-width: 600px) {
+    .genre-button {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
     }
 }

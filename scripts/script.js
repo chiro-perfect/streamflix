@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Éléments de la Modale
     const detailModalOverlay = document.getElementById('detail-modal-overlay');
     const detailModalContent = document.getElementById('detail-modal');
-    // Le bouton de fermeture est maintenant géré dynamiquement car il est recréé
     const closeModalButton = document.getElementById('close-modal'); 
     
     // ===================================================
@@ -39,89 +38,98 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // ===================================================
-    // CHARGEMENT DES FILMS (LIGNES)
+    // CHARGEMENT DES FILMS (LIGNES/GRILLE)
     // ===================================================
-    async function fetchMovies(endpoint, containerSelector, isHero = false) {
+    async function fetchContent(endpoint, containerSelector, isHero = false) {
         try {
+            // Simplification de la logique de pagination : on charge toujours la première page
             const url = `${BASE_URL}/${endpoint}?language=fr-FR&page=1`;
             const data = await apiFetch(url);
-            const movies = data.results;
+            const content = data.results;
 
-            if (isHero && movies.length > 0) {
-                // Le Hero prend un film au hasard dans le top 10 pour la bannière
-                const heroMovie = movies[Math.floor(Math.random() * Math.min(10, movies.length))];
-                updateHeroSection(heroMovie);
+            if (isHero && content.length > 0) {
+                const heroItem = content[Math.floor(Math.random() * Math.min(10, content.length))];
+                updateHeroSection(heroItem);
             } 
             
-            displayMovieCards(movies, containerSelector);
+            if (!isHero || containerSelector.startsWith('#row-')) {
+                displayContentCards(content, containerSelector);
+            }
 
         } catch (error) {
-            console.error('Erreur lors du chargement des films:', error);
+            console.error('Erreur lors du chargement des contenus:', error);
             const container = document.querySelector(containerSelector);
             if (container) {
-                container.innerHTML = '<p style="color:red;padding:1rem;">Erreur de chargement des données. Veuillez vérifier le Token API.</p>';
+                container.innerHTML = '<p class="error-message">Erreur de chargement des données. Veuillez vérifier le Token API.</p>';
             }
         }
     }
 
+// ===================================================
+// GESTION DU HERO SECTION
+// ===================================================
+function updateHeroSection(item) {
+    const heroSection = document.querySelector('.hero-section');
+    const titleElement = document.querySelector('.hero-title');
+    const descriptionElement = document.querySelector('.hero-description');
 
-    // ===================================================
-    // GESTION DU HERO SECTION
-    // ===================================================
-    function updateHeroSection(movie) {
-        const heroSection = document.querySelector('.hero-section');
-        const titleElement = document.querySelector('.hero-title');
-        const descriptionElement = document.querySelector('.hero-description');
-
-        const backdropPath = movie.backdrop_path || movie.poster_path;
-        if (backdropPath) {
-            heroSection.style.backgroundImage = `url('${IMAGE_BASE_URL}/original${backdropPath}')`;
-        }
-        
-        titleElement.textContent = movie.title || movie.name;
-        const overview = movie.overview || "Aucune description disponible. Plongez dans l'action, l'aventure et l'émotion.";
-        descriptionElement.textContent = overview.substring(0, 200) + (overview.length > 200 ? '...' : '');
-        
-        const mediaType = movie.media_type || 'movie';
-        document.querySelector('.primary-button').onclick = () => showMovieDetails(movie.id, mediaType);
+    if (!heroSection) {
+        console.warn("Avertissement: L'élément DOM '.hero-section' est introuvable. Skip Hero update.");
+        return; 
     }
+    
+    const backdropPath = item.backdrop_path || item.poster_path;
+    if (backdropPath) {
+        heroSection.style.backgroundImage = `url('${IMAGE_BASE_URL}/original${backdropPath}')`;
+    }
+    
+    titleElement.textContent = item.title || item.name;
+    
+    const overview = item.overview || "Aucune description disponible. Plongez dans l'action, l'aventure et l'émotion.";
+    
+    if (descriptionElement) {
+        descriptionElement.textContent = overview.substring(0, 200) + (overview.length > 200 ? '...' : '');
+    }
+    
+    const mediaType = item.media_type || (item.title ? 'movie' : 'tv');
+    const primaryButton = document.querySelector('.primary-button');
+    if (primaryButton) {
+        primaryButton.onclick = () => showContentDetails(item.id, mediaType);
+    }
+}
 
     // ===================================================
-    // AFFICHAGE DES CARTES DE FILMS & GESTION DU CLIC
+    // AFFICHAGE DES CARTES & GESTION DU CLIC
     // ===================================================
-    function displayMovieCards(movies, containerSelector) {
+    function displayContentCards(items, containerSelector, clearContainer = true) {
         const container = document.querySelector(containerSelector);
         if (!container) return;
 
-        container.innerHTML = ''; 
+        if (clearContainer) {
+            container.innerHTML = '';
+        }
 
-        movies.slice(0, 15).forEach(movie => { 
-            if (!movie.poster_path) return; 
+        items.forEach(item => {
+            if (!item.poster_path) return; 
 
-            // Déduire le type de média
-            let mediaType = movie.media_type;
-            if (!mediaType) {
-                if (containerSelector.includes('tv')) mediaType = 'tv';
-                else if (containerSelector.includes('movie')) mediaType = 'movie';
-                else mediaType = 'movie'; 
-            }
-            
+            let mediaType = item.media_type || (item.title ? 'movie' : 'tv');
+
             const card = document.createElement('div');
             card.className = 'movie-card';
             card.setAttribute('tabindex', '0'); 
-            card.dataset.movieId = movie.id; 
+            card.dataset.itemId = item.id; 
             card.dataset.mediaType = mediaType; 
 
-            const posterUrl = `${IMAGE_BASE_URL}/${POSTER_SIZE}${movie.poster_path}`;
-            const title = movie.title || movie.name;
+            const posterUrl = `${IMAGE_BASE_URL}/${POSTER_SIZE}${item.poster_path}`;
+            const title = item.title || item.name;
 
             card.innerHTML = `
-                <img src="${posterUrl}" alt="Affiche du film : ${title}">
+                <img src="${posterUrl}" alt="Affiche de: ${title}">
                 <div class="card-title-overlay">${title}</div>
             `;
             
             card.addEventListener('click', () => {
-                showMovieDetails(movie.id, mediaType);
+                showContentDetails(item.id, mediaType);
             });
             
             container.appendChild(card);
@@ -129,20 +137,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ===================================================
-    // GESTION DES DÉTAILS DU FILM (MODALE)
+    // GESTION DES DÉTAILS (MODALE)
     // ===================================================
-    async function showMovieDetails(id, type) {
+    async function showContentDetails(id, type) {
         detailModalOverlay.classList.add('visible');
         detailModalOverlay.classList.remove('hidden');
-        detailModalContent.innerHTML = '<button id="close-modal" aria-label="Fermer la fenêtre de détail" class="close-button text-button">✕</button><p id="modal-loading-message">Chargement des détails du film...</p>';
+        detailModalContent.innerHTML = '<button id="close-modal" aria-label="Fermer la fenêtre de détail" class="close-button text-button">✕</button><p id="modal-loading-message">Chargement des détails...</p>';
 
         try {
-            // Requête pour obtenir les détails et les crédits
             const url = `${BASE_URL}/${type}/${id}?language=fr-FR&append_to_response=credits`;
             const data = await apiFetch(url);
-            
             renderModalContent(data, type);
-
         } catch (error) {
             console.error(`Erreur lors du chargement des détails du ${type}:`, error);
             document.getElementById('modal-loading-message').textContent = 'Impossible de charger les détails. Veuillez réessayer.';
@@ -150,7 +155,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderModalContent(item, type) {
-        // Extraction des données de l'API
         const title = item.title || item.name;
         const releaseDate = (item.release_date || item.first_air_date || 'N/A').split('-')[0];
         const runtime = item.runtime || (item.episode_run_time ? `${item.episode_run_time[0]} min (par épisode)` : null);
@@ -163,7 +167,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const cast = item.credits.cast.slice(0, 5).map(c => c.name).join(', ');
         const isMovie = type === 'movie';
         
-        // Contenu par défaut (boutons)
         let mediaPlayerContent = `
             <div class="detail-player-area">
                 <button class="button primary-button" style="margin-right: 1rem;">▶ Regarder</button>
@@ -171,21 +174,12 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `;
         
-        let modalStyleModifier = ''; // Contrôle la classe CSS de la modale
+        let modalStyleModifier = ''; 
 
-        // ***************************************************************
-        // LOGIQUE D'AFFICHAGE DU LECTEUR DIRECT POUR LES QUATRE FANTASTIQUES
-        // ***************************************************************
         if (title.includes('Fantastique') || title.includes('Fantastic Four')) {
-            
-            // Appliquer le style "mode lecteur" (plus large)
             modalStyleModifier = ' modal-mode-lecteur';
-            
-            // L'URL MP4 directe trouvée dans le code du lecteur
             const directVideoUrl = "https://m60.uqload.cx/3rfk3vgaovwkq4drdl26fnniamsi2rdxkwps4dexlwplzexqhrmivobyruya/v.mp4";
             
-            // Création d'un IFRAME qui contient un lecteur HTML5 minimaliste (via srcdoc)
-            // utilisant l'URL MP4 directe.
             const embeddableContent = `
                 <div class="video-container">
                     <iframe 
@@ -212,7 +206,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 </p>
             `;
             
-            // Injection du contenu COMPLET en mode lecteur
             detailModalContent.innerHTML = `
                 <button id="close-modal" aria-label="Fermer la fenêtre de détail" class="close-button text-button">✕</button>
                 
@@ -227,6 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             ${runtime ? `<span>${runtime}</span>` : ''}
                         </div>
                         <p class="detail-overview">${overview}</p>
+                        
                         <p><strong>Genres:</strong> <div class="detail-genres">${genres}</div></p>
                         <p><strong>Acteurs principaux:</strong> ${cast}</p>
                     </div>
@@ -234,9 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             
         } else {
-            // ***************************************************************
-            // AFFICHAGE STANDARD POUR TOUS LES AUTRES FILMS
-            // ***************************************************************
+            // AFFICHAGE STANDARD POUR TOUS LES AUTRES CONTENUS
             detailModalContent.innerHTML = `
                 <button id="close-modal" aria-label="Fermer la fenêtre de détail" class="close-button text-button">✕</button>
                 <div class="detail-view">
@@ -261,10 +253,8 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         }
         
-        // Réattacher l'événement de fermeture car le contenu a été remplacé
         document.getElementById('close-modal').addEventListener('click', hideModal);
         
-        // Appliquer/Retirer le style de mode lecteur
         if (modalStyleModifier) {
             detailModalContent.classList.add('modal-mode-lecteur');
         } else {
@@ -274,12 +264,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function hideModal() {
         detailModalOverlay.classList.remove('visible');
-        // Cache la modale après l'animation de transition
         setTimeout(() => detailModalOverlay.classList.add('hidden'), 400); 
     }
 
-    // Gérer la fermeture de la modale au clic sur l'overlay
-    // Si closeModalButton existe déjà, attacher l'événement (même si mieux de l'attacher après le fetch)
     if (closeModalButton) {
         closeModalButton.addEventListener('click', hideModal);
     }
@@ -291,24 +278,92 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // ===================================================
-    // EXÉCUTION : CHARGEMENT DU CONTENU RICHE
-    // ===================================================
+// ===================================================
+// GESTION DES FILTRES ET DE LA RECHERCHE
+// ===================================================
+let searchTimeout;
 
-    // Le Hero utilise les films populaires pour une bonne image
-    fetchMovies('movie/popular', '#row-trending', true); 
+function setupFilters(contentType) {
+    const searchBar = document.getElementById('search-bar');
+    const genreFilter = document.getElementById('genre-filter');
+
+    // Populate the genre filter dropdown
+    fetchGenres(contentType, genreFilter);
+
+    // Event listener for genre change
+    genreFilter.addEventListener('change', () => {
+        const selectedGenreId = genreFilter.value;
+        if (selectedGenreId) {
+            const endpoint = `discover/${contentType}?with_genres=${selectedGenreId}`;
+            fetchContent(endpoint, '#content-grid');
+        } else {
+            // If "All Genres" is selected, reload the default content
+            const defaultEndpoint = contentType === 'movie' ? 'movie/now_playing' : 'tv/on_the_air';
+            fetchContent(defaultEndpoint, '#content-grid');
+        }
+    });
+
+    // Event listener for search bar with debounce
+    searchBar.addEventListener('input', (e) => {
+        clearTimeout(searchTimeout);
+        const query = e.target.value;
+        searchTimeout = setTimeout(() => {
+            if (query.trim() !== '') {
+                const endpoint = `search/${contentType}?query=${encodeURIComponent(query)}`;
+                fetchContent(endpoint, '#content-grid');
+            } else {
+                // If search bar is empty, reload default content
+                const defaultEndpoint = contentType === 'movie' ? 'movie/now_playing' : 'tv/on_the_air';
+                fetchContent(defaultEndpoint, '#content-grid');
+            }
+        }, 500); // Debounce time in ms
+    });
+}
+
+async function fetchGenres(contentType, dropdownElement) {
+    try {
+        const url = `${BASE_URL}/genre/${contentType}/list?language=fr-FR`;
+        const data = await apiFetch(url);
+        
+        dropdownElement.innerHTML = '<option value="">Tous les genres</option>';
+        data.genres.forEach(genre => {
+            const option = document.createElement('option');
+            option.value = genre.id;
+            option.textContent = genre.name;
+            dropdownElement.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Erreur lors du chargement des genres:', error);
+    }
+}
+
+
+// ===================================================
+// EXÉCUTION : CHARGEMENT DU CONTENU RICHE
+// ===================================================
+
+const path = window.location.pathname;
+
+if (path.includes('/series.html')) {
+    // Page SERIES
+    document.getElementById('page-title').textContent = 'Séries';
+    setupFilters('tv');
+    fetchContent('tv/on_the_air', '#content-grid');
+
+} else if (path.includes('/movies.html')) {
+    // Page FILMS
+    document.getElementById('page-title').textContent = 'Films';
+    setupFilters('movie');
+    fetchContent('movie/now_playing', '#content-grid');
     
-    // TENDANCES (Mix Films & Séries)
-    fetchMovies('trending/all/week', '#row-trending'); 
-    
-    // FILMS SPÉCIFIQUES
-    fetchMovies('discover/movie?with_genres=28', '#row-action'); // Action
-    fetchMovies('discover/movie?with_genres=35', '#row-comedy'); // Comédie
-    
-    // SÉRIES SPÉCIFIQUES
-    fetchMovies('discover/tv?with_genres=18', '#row-tv-drama'); // Drama TV
-    fetchMovies('discover/tv?with_genres=10765', '#row-tv-scifi'); // Sci-Fi TV
-    
+} else {
+    // Page ACCUEIL (index.html)
+    fetchContent('trending/all/week', '#row-trending', true); 
+    fetchContent('discover/movie?with_genres=28', '#row-action'); 
+    fetchContent('discover/movie?with_genres=35', '#row-comedy'); 
+    fetchContent('discover/tv?with_genres=18', '#row-tv-drama'); 
+    fetchContent('discover/tv?with_genres=10765', '#row-tv-scifi'); 
+}
 
     // --- Gestion des Thèmes et du Scroll ---
 

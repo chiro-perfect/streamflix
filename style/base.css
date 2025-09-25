@@ -1,132 +1,252 @@
 /*
 =================================================
-1. CHARTE GRAPHIQUE & VARIABLES CSS
+VARIABLES CSS (Design Tokens)
 =================================================
 */
 :root {
-    /* Transitions & Dimensions */
-    --transition-duration: 0.3s;
-    --border-radius: 6px;
-    --header-height-mobile: 60px;
-    --header-height-desktop: 80px; 
-    --header-height-scrolled: 50px; 
+    /* Couleurs (Thème sombre par défaut) */
+    --color-text-primary: #e0e0e0;
+    --color-text-secondary: #c0c0c0;
+    --color-background: #1e1e1e;
+    --color-accent: #e50914; /* Un rouge vif pour les éléments clés */
+    --color-shadow: rgba(0, 0, 0, 0.4);
+    --color-bg-rgb: 30, 30, 30; /* Version RGB de la couleur de fond pour les effets de transparence */
 
-    /* Espacements (Mobile-First) */
+    /* Glassmorphism */
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-bg-card: rgba(255, 255, 255, 0.1);
+    
+    /* Espacements */
     --padding-base: 1rem;
     --gap-sm: 0.5rem;
     --gap-md: 1rem;
+    --gap-lg: 2rem;
 
-    /* Thème Sombre (Dark) */
-    --color-background: #141414; 
-    --color-text-primary: #FFFFFF;
-    --color-text-secondary: #AAAAAA;
-    --color-accent: #E50914; 
-    --color-accent-hover: #FF3333;
-    --color-button-secondary: rgba(109, 109, 110, 0.7);
-    --color-shadow: rgba(0, 0, 0, 0.8);
-    --glass-bg-dark: rgba(20, 20, 20, 0.2);
-    --glass-bg-card: rgba(255, 255, 255, 0.08);
-    --input-placeholder: #888888;
+    /* Dimensions du Header */
+    --header-height-mobile: 60px;
+    --header-height-desktop: 80px;
+
+    /* Autres */
+    --border-radius: 12px;
+    --transition-duration: 0.3s;
 }
 
-/* Thème Clair (Light) */
+/* Thème clair */
 .theme-light {
-    --color-background: #FFFFFF;
     --color-text-primary: #111111;
-    --color-text-secondary: #555555;
-    --color-accent: #007bff;
-    --color-accent-hover: #0056b3;
-    --color-button-secondary: #CCCCCC;
-    --color-shadow: rgba(0, 0, 0, 0.3);
-    --glass-bg-dark: rgba(255, 255, 255, 0.8);
-    --glass-bg-card: rgba(0, 0, 0, 0.08);
-    --input-placeholder: #555555;
+    --color-text-secondary: #666666;
+    --color-background: #f0f0f0;
+    --color-shadow: rgba(0, 0, 0, 0.2);
+    --color-bg-rgb: 240, 240, 240;
+    --glass-bg: rgba(0, 0, 0, 0.05);
+    --glass-bg-card: rgba(0, 0, 0, 0.1);
 }
 
-/* Thème Cinéma / Sépia */
+/* Thème Cinéma */
 .theme-cinema {
-    --color-background: #4A3E38;
-    --color-text-primary: #EDE0C8;
-    --color-text-secondary: #C4B9A7;
-    --color-accent: #A34E00;
-    --color-accent-hover: #C86400;
-    --color-button-secondary: #5E534A;
-    --color-shadow: rgba(0, 0, 0, 0.7);
-    --glass-bg-dark: rgba(74, 62, 56, 0.6);
-    --glass-bg-card: rgba(255, 255, 255, 0.08);
-    --input-placeholder: #D3C4B6;
-}
-
-body {
-    background-color: var(--color-background);
-    color: var(--color-text-primary);
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding-top: 0; 
-    transition: background-color var(--transition-duration), color var(--transition-duration);
-    min-height: 100vh;
-    -webkit-font-smoothing: antialiased; 
+    --color-text-primary: #f0f0f0;
+    --color-text-secondary: #a0a0a0;
+    --color-background: #000000;
+    --color-accent: #b20710; /* Un rouge plus sombre et dramatique */
+    --color-shadow: rgba(0, 0, 0, 0.6);
+    --color-bg-rgb: 0, 0, 0;
+    --glass-bg: rgba(255, 255, 255, 0.02);
+    --glass-bg-card: rgba(255, 255, 255, 0.05);
 }
 
 /*
 =================================================
-2. UTILITIES (Flexbox)
+STYLES DE BASE ET TYPOGRAPHIE
+=================================================
+*/
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    color: var(--color-text-primary);
+    background-color: var(--color-background);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color var(--transition-duration) ease-in-out;
+}
+
+/*
+=================================================
+CLASSES UTILITAIRES
 =================================================
 */
 .flex-row {
     display: flex;
     align-items: center;
+    gap: var(--gap-md);
 }
 
 .hidden-mobile {
     display: none;
 }
 
+/* Visibilité sur les écrans plus grands */
+@media (min-width: 768px) {
+    .hidden-mobile {
+        display: flex;
+    }
+}
+
 /*
 =================================================
-5. BOUTONS & INTERACTIVITÉ
+COMPOSANTS GÉNÉRIQUES (réutilisables)
 =================================================
 */
+
+/* Styles de base pour les boutons */
 .button {
     padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: var(--border-radius);
+    border-radius: 25px;
     font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.9rem;
     cursor: pointer;
-    transition: all var(--transition-duration) ease-out;
+    border: none;
+    transition: transform var(--transition-duration) ease, box-shadow var(--transition-duration) ease;
+}
+
+.button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px var(--color-shadow);
 }
 
 .primary-button {
     background-color: var(--color-accent);
-    color: var(--color-text-primary);
-}
-.primary-button:hover {
-    background-color: var(--color-accent-hover);
-    transform: scale(1.05);
-    box-shadow: 0 4px 15px var(--color-shadow);
+    color: #fff;
 }
 
 .secondary-button {
-    background-color: var(--color-button-secondary);
+    background-color: rgba(var(--color-bg-rgb), 0.5);
     color: var(--color-text-primary);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
-.secondary-button:hover {
-    background-color: var(--color-button-secondary);
-    opacity: 0.9;
-    transform: scale(1.05);
+
+/* Styles pour les icônes texte */
+.text-button {
+    background: none;
+    border: none;
+    color: var(--color-text-primary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color var(--transition-duration);
+}
+
+.text-button:hover {
+    color: var(--color-accent);
+}
+
+/* Styles de base pour les cartes de film/série */
+.movie-card {
+    /* Les dimensions et le flex sont définis dans les fichiers de page spécifiques */
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    transition: transform var(--transition-duration) ease-out, box-shadow var(--transition-duration);
+    outline: 2px solid transparent;
+}
+
+.movie-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card-title-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: var(--gap-sm);
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+    color: var(--color-text-primary);
+    font-size: 0.8rem;
+    text-align: center;
+    opacity: 0;
+    transition: opacity var(--transition-duration);
+}
+
+/* Effets de survol (hover) pour les cartes */
+.movie-card:hover, .movie-card:focus {
+    transform: scale(1.1);
+    z-index: 10;
+    box-shadow: 0 15px 30px var(--color-shadow);
+    outline: 3px solid var(--color-accent);
+    background: var(--glass-bg-card);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.movie-card:hover .card-title-overlay {
+    opacity: 1;
 }
 
 /*
 =================================================
-9. GLASSMORHPISM & MODALE
+STYLING DE LA MODALE
 =================================================
 */
-.glassmorphism-effect {
-    background: var(--glass-bg-card); 
-    backdrop-filter: blur(25px); 
-    -webkit-backdrop-filter: blur(25px); 
-    border: 1px solid rgba(255, 255, 255, 0.2); 
-    box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.5); 
-    border-radius: 12px; 
-    transition: all var(--transition-duration); 
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal-overlay.visible {
+    visibility: visible;
+    opacity: 1;
+}
+
+.modal-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+}
+
+.modal-overlay.visible .modal-content {
+    transform: scale(1);
+}
+
+.close-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.5rem;
+    color: var(--color-text-secondary);
+}
+.close-button:hover {
+    color: var(--color-text-primary);
 }

@@ -11,7 +11,7 @@
     height: var(--header-height-mobile); 
     z-index: 5000; 
     
-    /* GLASSMORHPISM LIQUIDE SUR LE HEADER */
+    /* LIQUIDE GLASSE SUR LE HEADER */
     background: var(--glass-bg-dark); 
     backdrop-filter: blur(20px); 
     -webkit-backdrop-filter: blur(20px); 

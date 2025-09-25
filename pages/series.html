@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StreamFlix - Le Futur du Streaming</title>
+    <title>StreamFlix - Séries</title>
     <link rel="stylesheet" href="/style/base.css">
     <link rel="stylesheet" href="/style/header.css">
-    <link rel="stylesheet" href="/style/homepage.css">
-    <link rel="stylesheet" href="/style/modal.css">
     <link rel="stylesheet" href="/style/serie.css">
+    <link rel="stylesheet" href="/style/modal.css">
 
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
 </head>
@@ -19,9 +18,9 @@
             <h1 class="logo">StreamFlix</h1>
             <nav class="main-nav flex-row">
                 <a href="/index.html" class="nav-link" data-route="home">Accueil</a>
-                <a href="/pages/series.html" class="nav-link active" data-route="series">Séries</a>
-                <a href="/pages/movies.html" class="nav-link" data-route="movies">Films</a>
-                <a href="#ma-liste" class="nav-link hidden-mobile" data-route="my-list">Ma Liste</a>
+                <a href="series.html" class="nav-link active" data-route="series">Séries</a>
+                <a href="movies.html" class="nav-link" data-route="movies">Films</a>
+                <a href="maliste.html" class="nav-link hidden-mobile" data-route="my-list">Ma Liste</a>
             </nav>
             <div class="nav-actions flex-row">
                 <button id="theme-toggle" aria-label="Changer de thème" class="text-button">
@@ -51,6 +50,7 @@
 
     </main>
     
+    <!-- Modale de détail -->
     <div id="detail-modal-overlay" class="modal-overlay hidden">
         <div id="detail-modal" class="modal-content glassmorphism-effect">
             <button id="close-modal" aria-label="Fermer la fenêtre de détail" class="close-button text-button">✕</button>
@@ -60,10 +60,9 @@
     
 
     <footer>
-             <h7>&copy; 2025 | Bachar Alaoui Medaghri | StreamFlix </h7> 
+       <h7>&copy; 2025 | Bachar Alaoui Medaghri | StreamFlix </h7> 
     </footer>
-
     
-        <script src="/scripts/script.js"></script>
+    <script src="../scripts/script.js"></script> 
 </body>
 </html>

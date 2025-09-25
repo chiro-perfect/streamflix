@@ -5,7 +5,8 @@
 */
 .hero-section {
     position: relative;
-    height: 60vh; 
+    /* On utilise vh pour une hauteur flexible */
+    height: 60vh;
     background-color: var(--color-background);
     background-size: cover;
     background-position: center top;
@@ -13,7 +14,8 @@
     align-items: flex-end;
     padding: var(--padding-base);
     padding-bottom: 2rem;
-    margin-top: calc(0px - var(--header-height-mobile)); 
+    /* On décale vers le haut pour coller le header */
+    margin-top: calc(0px - var(--header-height-mobile));
 }
 
 .hero-overlay {
@@ -57,6 +59,8 @@
 .movie-row {
     margin-top: 2.5rem;
     padding-left: var(--padding-base);
+    /* Ajout d'une marge pour la dernière section */
+    margin-bottom: 2.5rem;
 }
 
 .row-title {
@@ -69,7 +73,7 @@
     display: flex;
     overflow-x: scroll;
     padding-bottom: 1rem;
-    gap: var(--gap-sm);
+    gap: 1rem; /* Espacement ajusté */
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
@@ -78,15 +82,16 @@
 }
 
 .movie-card {
-    min-width: 140px;
-    height: 210px;
-    flex: 0 0 auto; 
+    /* Dimensions ajustées pour un meilleur agencement */
+    min-width: 150px;
+    height: 225px;
+    flex: 0 0 auto;
     border-radius: var(--border-radius);
     overflow: hidden;
     cursor: pointer;
     position: relative;
     transition: transform var(--transition-duration) ease-out, box-shadow var(--transition-duration);
-    outline: 2px solid transparent; 
+    outline: 2px solid transparent;
     transition: transform var(--transition-duration), outline var(--transition-duration), background var(--transition-duration), backdrop-filter var(--transition-duration);
 }
 
@@ -115,10 +120,10 @@
     transform: scale(1.1);
     z-index: 10;
     box-shadow: 0 15px 30px var(--color-shadow);
-    outline: 3px solid var(--color-accent); 
-    
+    outline: 3px solid var(--color-accent);
+
     /* GLASSMORHPISM LIQUIDE SUR LA CARTE */
-    background: var(--glass-bg-card); 
+    background: var(--glass-bg-card);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
 }
@@ -144,7 +149,7 @@
 
     /* Grille: Cartes plus grandes */
     .scrollable-horizontal {
-        gap: var(--gap-md);
+        gap: 1.5rem; /* Espacement ajusté sur tablette */
     }
     .movie-card {
         min-width: 180px;
@@ -155,25 +160,30 @@
 /* Desktop (min-width: 1200px) */
 @media (min-width: 1200px) {
     .hero-section {
-        height: 45vw; 
+        height: 45vw;
         padding: 3vw;
         margin-top: calc(0px - var(--header-height-desktop));
     }
     .hero-title {
-        font-size: 4vw; 
+        font-size: 4vw;
     }
     .hero-description {
         font-size: 1vw;
         max-width: 40vw;
     }
-    
+
     /* Grilles adaptatives */
     .movie-row {
         padding-left: 3vw;
         margin-top: 3vw;
     }
+    .scrollable-horizontal {
+        gap: 2rem; /* Espacement ajusté sur desktop */
+        padding-left: 0; /* Pas de padding pour les lignes sur desktop, déjà géré par movie-row */
+    }
     .movie-card {
-        min-width: 15vw; 
-        height: 22.5vw; 
+        /* On retire min-width pour laisser la flexibilité du vw */
+        width: 15vw;
+        height: 22.5vw;
     }
 }

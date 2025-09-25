@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StreamFlix - Films</title>
+    <title>StreamFlix - Ma Liste</title>
     <link rel="stylesheet" href="/style/base.css">
     <link rel="stylesheet" href="/style/header.css">
-    <link rel="stylesheet" href="/style/film.css">
+    <link rel="stylesheet" href="/style/maliste.css">
     <link rel="stylesheet" href="/style/modal.css">
 
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
@@ -14,13 +14,13 @@
 <body class="theme-dark">
     
     <header id="main-header" class="glassmorphism-effect">
-        <div class="header-content flex-row"> 
+        <div class="header-content flex-row">   
             <h1 class="logo">StreamFlix</h1>
             <nav class="main-nav flex-row">
                 <a href="/index.html" class="nav-link" data-route="home">Accueil</a>
                 <a href="series.html" class="nav-link" data-route="series">Séries</a>
-                <a href="movies.html" class="nav-link active" data-route="movies">Films</a>
-                <a href="maliste.html" class="nav-link hidden-mobile" data-route="my-list">Ma Liste</a>
+                <a href="movies.html" class="nav-link" data-route="movies">Films</a>
+                <a href="maliste.html" class="nav-link active" data-route="my-list">Ma Liste</a>
             </nav>
             <div class="nav-actions flex-row">
                 <button id="theme-toggle" aria-label="Changer de thème" class="text-button">
@@ -32,24 +32,18 @@
     </header>
 
     <main id="app-container" class="page-container">
-        
         <section class="page-header-section">
-            <h2 id="page-title" class="page-title">Films</h2>
-            <div class="filter-controls flex-row">
-                <input type="text" id="search-bar" placeholder="Rechercher des films..." aria-label="Rechercher des films">
-                <select id="genre-filter" aria-label="Filtrer par genre"></select>
-            </div>
+            <h2 id="page-title" class="page-title">Ma Liste</h2>
         </section>
 
         <section class="content-section">
-            <div id="content-grid" class="movie-grid">
-                <!-- Les cartes de films seront insérées ici par le JavaScript -->
-                <p class="loading-message">Chargement des films...</p>
+            <div id="my-list-grid" class="movie-grid">
+                <!-- Le contenu de "Ma Liste" sera affiché ici par le JavaScript -->
+                <p id="empty-list-message" class="loading-message">Votre liste est vide pour le moment.</p>
             </div>
         </section>
-
     </main>
-    
+
     <!-- Modale de détail -->
     <div id="detail-modal-overlay" class="modal-overlay hidden">
         <div id="detail-modal" class="modal-content glassmorphism-effect">
@@ -58,11 +52,10 @@
         </div>
     </div>
     
-
     <footer>
        <h7>&copy; 2025 | Bachar Alaoui Medaghri | StreamFlix </h7> 
     </footer>
     
-    <script src="/scripts/script.js"></script> 
+    <script src="../scripts/script.js"></script>
 </body>
 </html>
