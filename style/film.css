@@ -48,12 +48,29 @@ STYLES POUR LA PAGE 'FILMS'
     cursor: pointer;
     background: var(--glass-bg-card);
     flex-grow: 1;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
 }
 
 #search-bar::placeholder {
     color: var(--color-text-secondary);
+    transition: color 0.3s ease;
 }
+
+/* Nouvel effet de survol et de focus pour les sélecteurs de filtres */
+#search-bar:hover,
+#genre-filter:hover,
+#search-bar:focus,
+#genre-filter:focus {
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+/* Cache le placeholder au focus pour une meilleure clarté */
+#search-bar:focus::placeholder {
+    color: transparent;
+}
+
 
 #genre-filter {
     -webkit-appearance: none;
@@ -132,6 +149,74 @@ STYLES POUR LA PAGE 'FILMS'
 
 /*
 =================================================
+STYLES POUR LE TOP 3 DES FILMS
+=================================================
+*/
+/* Grille spécifique pour les 3 premiers films */
+.top-movie-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2.5rem;
+    justify-items: center;
+    margin-bottom: 3rem;
+}
+
+/* Carte de film agrandie pour le top 3 */
+.top-movie-card {
+    position: relative;
+    width: 100%;
+    height: auto;
+    padding-bottom: 150%;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease-out, box-shadow 0.3s;
+    outline: 3px solid transparent;
+}
+
+.top-movie-card:hover, .top-movie-card:focus {
+    transform: scale(1.05);
+    z-index: 10;
+    box-shadow: 0 15px 40px var(--color-shadow);
+    outline: 5px solid var(--color-accent);
+}
+
+/* Badge #1 #2 #3 */
+.top-movie-rank {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--color-accent);
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 900;
+    border-radius: 50%;
+    z-index: 20;
+    border: 3px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.top-movie-rank.one { background: #E5A509; } /* Or */
+.top-movie-rank.two { background: #A7A7AD; } /* Argent */
+.top-movie-rank.three { background: #B87333; } /* Bronze */
+
+
+/* Ligne de séparation */
+.top-3-divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
+    margin: 2rem 0;
+}
+
+
+/*
+=================================================
 RESPONSIVENESS (@media queries)
 =================================================
 */
@@ -139,21 +224,26 @@ RESPONSIVENESS (@media queries)
     .page-container {
         padding-top: calc(var(--header-height-desktop) + 2rem);
     }
-    
+
     .page-header-section {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
         margin-top: 2rem;
     }
-    
+
     .filter-controls {
         width: auto;
     }
-    
+
     .movie-grid {
         grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
         gap: 2rem;
+    }
+
+    .top-movie-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 3rem;
     }
 }
 
@@ -161,7 +251,7 @@ RESPONSIVENESS (@media queries)
     .page-container {
         padding-top: calc(var(--header-height-desktop) + 3vw);
     }
-    
+
     .page-header-section {
         padding: 0 3vw;
         margin-top: 3vw;
@@ -170,10 +260,15 @@ RESPONSIVENESS (@media queries)
     .content-section {
         padding: 0 3vw;
     }
-    
+
     .movie-grid {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
         gap: 2.5rem;
+    }
+
+    .top-movie-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 4rem;
     }
 }
 

@@ -12,6 +12,71 @@ STYLES POUR LA PAGE 'SÉRIES'
     flex-direction: column;
 }
 
+/*
+=================================================
+NOUVELLE SECTION: TOP 3 DES SÉRIES (Horizontal Scroll)
+=================================================
+*/
+
+.top-series-row-container {
+    /* Aligner le contenu avec le padding de base du reste de la page */
+    padding-left: var(--padding-base); 
+    margin-bottom: 2.5rem;
+}
+
+.top-series-row-title {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    /* Assure que le titre est bien aligné à gauche */
+    padding-right: var(--padding-base); 
+}
+
+/* Conteneur défilant horizontalement pour les cartes Top */
+.top-series-grid {
+    display: flex;
+    overflow-x: scroll;
+    padding-bottom: 1rem; 
+    gap: var(--gap-md);
+    /* Masquer la barre de défilement par défaut */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.top-series-grid::-webkit-scrollbar {
+    display: none;
+}
+
+/* Carte de la série Top 3 (plus grande et format vertical pour l'impact) */
+.top-series-card {
+    min-width: 250px; 
+    height: 375px; 
+    flex: 0 0 auto;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    /* Utilise les variables de transition cohérentes avec le reste du site */
+    transition: transform var(--transition-duration) var(--transition-easing), 
+                box-shadow var(--transition-duration), 
+                outline var(--transition-duration);
+    outline: 2px solid transparent;
+}
+
+.top-series-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Effet de survol : Zoom et lueur */
+.top-series-card:hover, .top-series-card:focus {
+    transform: scale(1.05); 
+    z-index: 10;
+    /* Utilise les variables d'ombre sombre et d'accent pour un effet cohérent */
+    box-shadow: 0 25px 50px var(--color-shadow-dark, rgba(0, 0, 0, 0.8)), 0 0 0 4px var(--color-accent); 
+    outline: none;
+}
+
 /* Panneau de contrôle avec titre et filtres */
 .page-header-section {
     padding: 0 var(--padding-base);
@@ -36,7 +101,7 @@ STYLES POUR LA PAGE 'SÉRIES'
     width: 100%;
 }
 
-/* Sélecteurs de filtres */
+/* Sélecteurs de filtres (APPLIQUENT LE LIQUID GLASS) */
 #search-bar,
 #genre-filter {
     font-size: 1rem;
@@ -46,7 +111,12 @@ STYLES POUR LA PAGE 'SÉRIES'
     border-radius: 25px;
     outline: none;
     cursor: pointer;
-    background: var(--glass-bg-card);
+    /* Correction: Utilise la variable Glassmorphism unifiée */
+    background: var(--glass-bg); 
+    /* Application des filtres de flou pour l'effet de verre */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    
     flex-grow: 1;
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
@@ -83,7 +153,7 @@ STYLES POUR LA PAGE 'SÉRIES'
     justify-items: center;
 }
 
-/* Styles de la carte de film/série (réutilisés de homepage.css) */
+/* Styles de la carte de film/série (Nettoyé des effets Glassmorphism) */
 .movie-card {
     position: relative;
     width: 100%;
@@ -92,7 +162,10 @@ STYLES POUR LA PAGE 'SÉRIES'
     border-radius: var(--border-radius);
     overflow: hidden;
     cursor: pointer;
-    transition: transform var(--transition-duration) ease-out, box-shadow var(--transition-duration);
+    /* Utilise les variables de transition cohérentes */
+    transition: transform var(--transition-duration) var(--transition-easing), 
+                box-shadow var(--transition-duration), 
+                outline var(--transition-duration);
     outline: 2px solid transparent;
 }
 
@@ -122,7 +195,8 @@ STYLES POUR LA PAGE 'SÉRIES'
 .movie-card:hover, .movie-card:focus {
     transform: scale(1.05);
     z-index: 10;
-    box-shadow: 0 15px 30px var(--color-shadow);
+    /* Met à jour pour utiliser la variable --color-shadow-dark pour plus de cohérence */
+    box-shadow: 0 15px 30px var(--color-shadow-dark);
     outline: 3px solid var(--color-accent);
 }
 
@@ -150,6 +224,15 @@ RESPONSIVENESS (@media queries)
     .filter-controls {
         width: auto;
     }
+
+    .top-series-row-title {
+        font-size: 2.2rem;
+    }
+
+    .top-series-card {
+        min-width: 300px;
+        height: 450px;
+    }
     
     .movie-grid {
         grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -160,6 +243,20 @@ RESPONSIVENESS (@media queries)
 @media (min-width: 1200px) {
     .page-container {
         padding-top: calc(var(--header-height-desktop) + 3vw);
+    }
+
+    .top-series-row-container {
+        padding-left: 3vw;
+    }
+
+    .top-series-row-title {
+        font-size: 2.5vw;
+        padding-right: 3vw;
+    }
+
+    .top-series-card {
+        min-width: 25vw; /* Encore plus large sur desktop */
+        height: 37.5vw; /* Ratio 2:3 */
     }
     
     .page-header-section {
@@ -191,6 +288,7 @@ STYLES POUR LES BOUTONS DE FILTRAGE PAR GENRE
 }
 
 .genre-button {
+    /* Utilisation de couleurs semi-transparentes pour un effet Glass-like subtil */
     background-color: rgba(255, 255, 255, 0.1);
     color: var(--color-text-secondary);
     border: 1px solid rgba(255, 255, 255, 0.2);

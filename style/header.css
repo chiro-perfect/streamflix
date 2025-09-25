@@ -11,14 +11,8 @@
     height: var(--header-height-mobile); 
     z-index: 5000; 
     
-    /* LIQUIDE GLASSE SUR LE HEADER */
-    background: var(--glass-bg-dark); 
-    backdrop-filter: blur(20px); 
-    -webkit-backdrop-filter: blur(20px); 
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
-    box-shadow: 0 4px 10px var(--color-shadow);
-    border-radius: 0; 
-    
+    /* On utilise la classe générique qui gère le Glassmorphism de base.css */
+    /* La transition de hauteur est maintenue ici */
     transition: height var(--transition-duration) ease, background-color var(--transition-duration);
 }
 
@@ -79,9 +73,11 @@
 /* Header réduit au scroll */
 .scrolled#main-header {
     height: var(--header-height-scrolled);
-    background: var(--color-background); 
-    box-shadow: 0 4px 10px var(--color-shadow);
-    background: var(--glass-bg-dark); 
+    /* Utilisation des variables pour le Glassmorphism réduit */
+    background: var(--glass-bg); 
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 10px var(--color-shadow-dark);
 }
 .scrolled .logo {
     font-size: 1.2rem;
@@ -97,12 +93,13 @@
     outline: none;
     width: 150px;
     transition: width var(--transition-duration);
+    background-color: rgba(255, 255, 255, 0.05); /* Arrière-plan subtil */
 }
 .search-input:focus {
     width: 250px; 
 }
 .search-input::placeholder {
-    color: var(--input-placeholder);
+    color: var(--color-text-secondary);
 }
 
 

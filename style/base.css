@@ -9,26 +9,34 @@ VARIABLES CSS (Design Tokens)
     --color-text-secondary: #c0c0c0;
     --color-background: #1e1e1e;
     --color-accent: #e50914; /* Un rouge vif pour les éléments clés */
-    --color-shadow: rgba(0, 0, 0, 0.4);
-    --color-bg-rgb: 30, 30, 30; /* Version RGB de la couleur de fond pour les effets de transparence */
+    --color-shadow-light: rgba(255, 255, 255, 0.05); /* Nouvelle variable pour l'effet de lumière */
+    --color-shadow-dark: rgba(0, 0, 0, 0.8); /* Ombre plus foncée pour le contraste */
+    
+    /* Dégradé de fond animé */
+    --bg-gradient-1: #1e1e1e; /* Début du dégradé, même que la couleur de fond */
+    --bg-gradient-2: #2a2a2a; /* Une couleur un peu plus claire pour le dégradé */
+    --bg-gradient-3: #1e1e1e; /* Retour à la couleur de fond */
 
-    /* Glassmorphism */
-    --glass-bg: rgba(255, 255, 255, 0.05);
-    --glass-bg-card: rgba(255, 255, 255, 0.1);
+    /* Glassmorphism LIQUIDE */
+    --glass-blur: 20px; /* Augmentation du flou pour un effet plus liquide */
+    --glass-bg: rgba(255, 255, 255, 0.08); /* Plus de transparence */
+    --glass-border: rgba(255, 255, 255, 0.15); /* Bordure de verre plus visible */
     
     /* Espacements */
-    --padding-base: 1rem;
+    --padding-base: 1.5rem; /* Augmenté */
     --gap-sm: 0.5rem;
-    --gap-md: 1rem;
+    --gap-md: 1.5rem; /* Augmenté */
     --gap-lg: 2rem;
 
     /* Dimensions du Header */
     --header-height-mobile: 60px;
     --header-height-desktop: 80px;
+    --header-height-scrolled: 65px; /* Ajout d'une variable de hauteur réduite */
 
     /* Autres */
-    --border-radius: 12px;
-    --transition-duration: 0.3s;
+    --border-radius: 16px; /* Plus arrondis */
+    --transition-duration: 0.4s; /* Transition plus longue pour plus de fluidité */
+    --transition-easing: cubic-bezier(0.25, 0.8, 0.25, 1); /* Pour un effet de ressort */
 }
 
 /* Thème clair */
@@ -36,10 +44,13 @@ VARIABLES CSS (Design Tokens)
     --color-text-primary: #111111;
     --color-text-secondary: #666666;
     --color-background: #f0f0f0;
-    --color-shadow: rgba(0, 0, 0, 0.2);
-    --color-bg-rgb: 240, 240, 240;
+    --color-shadow-light: rgba(0, 0, 0, 0.05);
+    --color-shadow-dark: rgba(0, 0, 0, 0.2);
+    --bg-gradient-1: #f0f0f0;
+    --bg-gradient-2: #e0e0e0;
+    --bg-gradient-3: #f0f0f0;
     --glass-bg: rgba(0, 0, 0, 0.05);
-    --glass-bg-card: rgba(0, 0, 0, 0.1);
+    --glass-border: rgba(0, 0, 0, 0.1);
 }
 
 /* Thème Cinéma */
@@ -47,18 +58,29 @@ VARIABLES CSS (Design Tokens)
     --color-text-primary: #f0f0f0;
     --color-text-secondary: #a0a0a0;
     --color-background: #000000;
-    --color-accent: #b20710; /* Un rouge plus sombre et dramatique */
-    --color-shadow: rgba(0, 0, 0, 0.6);
-    --color-bg-rgb: 0, 0, 0;
+    --color-accent: #b20710; 
+    --color-shadow-light: rgba(255, 255, 255, 0.02);
+    --color-shadow-dark: rgba(0, 0, 0, 0.9);
+    --bg-gradient-1: #000000;
+    --bg-gradient-2: #050505;
+    --bg-gradient-3: #000000;
     --glass-bg: rgba(255, 255, 255, 0.02);
-    --glass-bg-card: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.05);
 }
 
 /*
 =================================================
-STYLES DE BASE ET TYPOGRAPHIE
+STYLES DE BASE ET FOND ANIMÉ
 =================================================
 */
+
+/* Animation du fond qui bouge */
+@keyframes background-pan {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
 *,
 *::before,
 *::after {
@@ -74,11 +96,32 @@ html {
 body {
     font-family: 'Roboto', sans-serif;
     color: var(--color-text-primary);
-    background-color: var(--color-background);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
-    transition: background-color var(--transition-duration) ease-in-out;
+
+    /* Fond animé avec dégradé qui utilise les variables de thème */
+    background: linear-gradient(-45deg, var(--bg-gradient-1), var(--bg-gradient-2), var(--bg-gradient-3));
+    background-size: 400% 400%; 
+    animation: background-pan 30s ease infinite; 
+    transition: color var(--transition-duration), background-color var(--transition-duration);
 }
+
+/*
+=================================================
+GLASSMORPHISM LIQUIDE UTILITAIRE
+=================================================
+*/
+/* Cette classe est appliquée directement au <header> et à la modale */
+.glassmorphism-effect {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px 0 var(--color-shadow-dark);
+    transition: all var(--transition-duration) var(--transition-easing);
+    border-radius: var(--border-radius);
+}
+
 
 /*
 =================================================
@@ -111,18 +154,18 @@ COMPOSANTS GÉNÉRIQUES (réutilisables)
 /* Styles de base pour les boutons */
 .button {
     padding: 0.75rem 1.5rem;
-    border-radius: 25px;
+    border-radius: 30px; /* Plus arrondis */
     font-weight: 700;
     text-transform: uppercase;
     font-size: 0.9rem;
     cursor: pointer;
     border: none;
-    transition: transform var(--transition-duration) ease, box-shadow var(--transition-duration) ease;
+    transition: all var(--transition-duration) var(--transition-easing);
 }
 
 .button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px var(--color-shadow);
+    transform: translateY(-4px); /* Effet de zoom plus marqué */
+    box-shadow: 0 10px 20px var(--color-shadow-dark);
 }
 
 .primary-button {
@@ -131,10 +174,12 @@ COMPOSANTS GÉNÉRIQUES (réutilisables)
 }
 
 .secondary-button {
-    background-color: rgba(var(--color-bg-rgb), 0.5);
+    /* Le bouton secondaire est lui aussi un élément en verre léger */
+    background: var(--glass-bg); 
     color: var(--color-text-primary);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
 }
 
 /* Styles pour les icônes texte */
@@ -144,109 +189,10 @@ COMPOSANTS GÉNÉRIQUES (réutilisables)
     color: var(--color-text-primary);
     font-size: 1.5rem;
     cursor: pointer;
-    transition: color var(--transition-duration);
+    transition: all var(--transition-duration);
 }
 
 .text-button:hover {
     color: var(--color-accent);
-}
-
-/* Styles de base pour les cartes de film/série */
-.movie-card {
-    /* Les dimensions et le flex sont définis dans les fichiers de page spécifiques */
-    border-radius: var(--border-radius);
-    overflow: hidden;
-    cursor: pointer;
-    position: relative;
-    transition: transform var(--transition-duration) ease-out, box-shadow var(--transition-duration);
-    outline: 2px solid transparent;
-}
-
-.movie-card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.card-title-overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    padding: var(--gap-sm);
-    background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
-    color: var(--color-text-primary);
-    font-size: 0.8rem;
-    text-align: center;
-    opacity: 0;
-    transition: opacity var(--transition-duration);
-}
-
-/* Effets de survol (hover) pour les cartes */
-.movie-card:hover, .movie-card:focus {
     transform: scale(1.1);
-    z-index: 10;
-    box-shadow: 0 15px 30px var(--color-shadow);
-    outline: 3px solid var(--color-accent);
-    background: var(--glass-bg-card);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-}
-
-.movie-card:hover .card-title-overlay {
-    opacity: 1;
-}
-
-/*
-=================================================
-STYLING DE LA MODALE
-=================================================
-*/
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(5px);
-    z-index: 1000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-
-.modal-overlay.visible {
-    visibility: visible;
-    opacity: 1;
-}
-
-.modal-content {
-    position: relative;
-    max-width: 90%;
-    max-height: 90vh;
-    overflow-y: auto;
-    border-radius: var(--border-radius);
-    padding: 2rem;
-    transform: scale(0.9);
-    transition: transform 0.3s ease;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
-}
-
-.modal-overlay.visible .modal-content {
-    transform: scale(1);
-}
-
-.close-button {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    font-size: 1.5rem;
-    color: var(--color-text-secondary);
-}
-.close-button:hover {
-    color: var(--color-text-primary);
 }

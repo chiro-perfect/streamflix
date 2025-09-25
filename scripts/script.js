@@ -4,6 +4,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // ===================================================
     // CONFIGURATION TMDB API
     // ===================================================
+    // ATTENTION : Les clés API et les tokens d'authentification ne doivent JAMAIS
+    // être stockés directement dans le code côté client pour une application de production.
+    // Cela expose vos clés et pourrait permettre une utilisation abusive.
+    // Pour un projet réel, il faudrait utiliser un serveur proxy pour cacher ces informations.
     const API_KEY = 'e4b90327227c88daac14c0bd0c1f93cd';
     const BASE_URL = 'https://api.themoviedb.org/3';
     const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p';
@@ -108,10 +112,17 @@ function updateHeroSection(item) {
         if (clearContainer) {
             container.innerHTML = '';
         }
+        
+        // Limite le nombre de films si l'attribut data-limit est présent
+        const limit = container.dataset.limit ? parseInt(container.dataset.limit) : null;
+        const itemsToDisplay = limit ? items.slice(0, limit) : items;
 
-        items.forEach(item => {
+        itemsToDisplay.forEach(item => {
             if (!item.poster_path) return; 
 
+            // La logique pour déterminer mediaType est un peu fragile.
+            // Il est préférable de s'assurer que l'API renvoie ce type d'information
+            // de manière fiable, par exemple en utilisant des endpoints spécifiques.
             let mediaType = item.media_type || (item.title ? 'movie' : 'tv');
 
             const card = document.createElement('div');
@@ -123,6 +134,8 @@ function updateHeroSection(item) {
             const posterUrl = `${IMAGE_BASE_URL}/${POSTER_SIZE}${item.poster_path}`;
             const title = item.title || item.name;
 
+            // Utiliser innerHTML peut être risqué si les données ne sont pas sécurisées.
+            // Ici, comme les titres proviennent d'une API de confiance, le risque est faible.
             card.innerHTML = `
                 <img src="${posterUrl}" alt="Affiche de: ${title}">
                 <div class="card-title-overlay">${title}</div>
@@ -176,6 +189,11 @@ function updateHeroSection(item) {
         
         let modalStyleModifier = ''; 
 
+        // ATTENTION : Cette logique est très spécifique et difficile à maintenir.
+        // La vidéo est codée en dur pour un titre précis. Si le titre change ou
+        // si vous voulez ajouter d'autres films avec des vidéos, cela ne fonctionnera plus.
+        // Il serait préférable d'utiliser l'API TMDB pour trouver des vidéos/trailers,
+        // même si ces vidéos ne sont pas les films complets eux-mêmes.
         if (title.includes('Fantastique') || title.includes('Fantastic Four')) {
             modalStyleModifier = ' modal-mode-lecteur';
             const directVideoUrl = "https://m60.uqload.cx/3rfk3vgaovwkq4drdl26fnniamsi2rdxkwps4dexlwplzexqhrmivobyruya/v.mp4";
@@ -253,6 +271,7 @@ function updateHeroSection(item) {
             `;
         }
         
+        // La gestion de la fermeture de la modale est faite ici, ce qui est une bonne approche.
         document.getElementById('close-modal').addEventListener('click', hideModal);
         
         if (modalStyleModifier) {
@@ -287,8 +306,14 @@ function setupFilters(contentType) {
     const searchBar = document.getElementById('search-bar');
     const genreFilter = document.getElementById('genre-filter');
 
+    // NOUVELLE VERIFICATION : Si un élément essentiel manque, on s'arrête.
+    if (!searchBar || !genreFilter) {
+        console.error(`Erreur: Les éléments 'search-bar' ou 'genre-filter' sont introuvables. Le filtrage et la recherche ne seront pas activés pour ${contentType}.`);
+        return; 
+    }
+
     // Populate the genre filter dropdown
-    fetchGenres(contentType, genreFilter);
+    fetchGenres(contentType, genreFilter); // <--- Le code s'arrête souvent ici s'il y a une erreur API
 
     // Event listener for genre change
     genreFilter.addEventListener('change', () => {
@@ -348,12 +373,14 @@ if (path.includes('/series.html')) {
     // Page SERIES
     document.getElementById('page-title').textContent = 'Séries';
     setupFilters('tv');
+    fetchContent('tv/top_rated', '#row-top-series'); 
     fetchContent('tv/on_the_air', '#content-grid');
 
 } else if (path.includes('/movies.html')) {
     // Page FILMS
     document.getElementById('page-title').textContent = 'Films';
     setupFilters('movie');
+    fetchContent('movie/top_rated', '#row-top-movies'); 
     fetchContent('movie/now_playing', '#content-grid');
     
 } else {
