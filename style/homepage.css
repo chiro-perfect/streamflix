@@ -1,0 +1,180 @@
+/*
+=================================================
+4. HERO SECTION (Plein Écran Derrière Header)
+=================================================
+*/
+.hero-section {
+    position: relative;
+    height: 60vh; 
+    background-color: var(--color-background);
+    background-size: cover;
+    background-position: center top;
+    display: flex;
+    align-items: flex-end;
+    padding: var(--padding-base);
+    padding-bottom: 2rem;
+    /* Décalage vers le haut pour se placer derrière le header */
+    margin-top: calc(0px - var(--header-height-mobile)); 
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, var(--color-background) 0%, rgba(20, 20, 20, 0.4) 50%, transparent 100%);
+}
+
+.hero-content {
+    z-index: 1;
+    max-width: 90%;
+}
+
+.hero-title {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: 900;
+    text-shadow: 0 2px 4px var(--color-shadow);
+}
+
+.hero-description {
+    color: var(--color-text-secondary);
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    max-width: 400px;
+    font-weight: 300;
+}
+
+.hero-buttons {
+    gap: var(--gap-md);
+}
+
+/*
+=================================================
+6. GRILLE DE FILMS (Glassmorphism Liquide sur Hover)
+=================================================
+*/
+.movie-row {
+    margin-top: 2.5rem;
+    padding-left: var(--padding-base);
+}
+
+.row-title {
+    font-size: 1.4rem;
+    margin-bottom: 0.8rem;
+    font-weight: 700;
+}
+
+.scrollable-horizontal {
+    display: flex;
+    overflow-x: scroll;
+    padding-bottom: 1rem;
+    gap: var(--gap-sm);
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.scrollable-horizontal::-webkit-scrollbar {
+    display: none;
+}
+
+.movie-card {
+    min-width: 140px;
+    height: 210px;
+    flex: 0 0 auto; 
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    transition: transform var(--transition-duration) ease-out, box-shadow var(--transition-duration);
+    outline: 2px solid transparent; 
+    transition: transform var(--transition-duration), outline var(--transition-duration), background var(--transition-duration), backdrop-filter var(--transition-duration);
+}
+
+.movie-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card-title-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: var(--gap-sm);
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+    color: var(--color-text-primary);
+    font-size: 0.8rem;
+    text-align: center;
+    opacity: 0;
+    transition: opacity var(--transition-duration);
+}
+
+/* Hover effect avancé (zoom et glassmorphism) */
+.movie-card:hover, .movie-card:focus {
+    transform: scale(1.1);
+    z-index: 10;
+    box-shadow: 0 15px 30px var(--color-shadow);
+    outline: 3px solid var(--color-accent); 
+    
+    /* GLASSMORHPISM LIQUIDE SUR LA CARTE */
+    background: var(--glass-bg-card); 
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+.movie-card:hover .card-title-overlay {
+    opacity: 1;
+}
+
+/*
+=================================================
+8. RESPONSIVENESS (@media queries)
+=================================================
+*/
+/* Tablette (min-width: 768px) */
+@media (min-width: 768px) {
+    /* Hero Section */
+    .hero-section {
+        height: 70vh;
+        margin-top: calc(0px - var(--header-height-desktop));
+    }
+    .hero-title {
+        font-size: 3.5rem;
+    }
+
+    /* Grille: Cartes plus grandes */
+    .scrollable-horizontal {
+        gap: var(--gap-md);
+    }
+    .movie-card {
+        min-width: 180px;
+        height: 270px;
+    }
+}
+
+/* Desktop (min-width: 1200px) */
+@media (min-width: 1200px) {
+    .hero-section {
+        height: 45vw; 
+        padding: 3vw;
+        margin-top: calc(0px - var(--header-height-desktop));
+    }
+    .hero-title {
+        font-size: 4vw; 
+    }
+    .hero-description {
+        font-size: 1vw;
+        max-width: 40vw;
+    }
+    
+    /* Grilles adaptatives */
+    .movie-row {
+        padding-left: 3vw;
+        margin-top: 3vw;
+    }
+    .movie-card {
+        min-width: 15vw; 
+        height: 22.5vw; 
+    }
+}

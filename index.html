@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamFlix - Le Futur du Streaming</title>
+    <link rel="stylesheet" href="style/base.css">
+    <link rel="stylesheet" href="style/header.css">
+    <link rel="stylesheet" href="style/homepage.css">
+    <link rel="stylesheet" href="style/modal.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+</head>
+<body class="theme-dark">
+    
+    <header id="main-header" class="glassmorphism-effect">
+        <div class="header-content flex-row">
+            <h1 class="logo">StreamFlix</h1>
+            <nav class="main-nav flex-row">
+                <a href="index.html" class="nav-link active" data-route="home">Accueil</a>
+                <a href="pages/series.html" class="nav-link" data-route="series">Séries</a>
+                <a href="pages/movies.html" class="nav-link" data-route="movies">Films</a>
+                <a href="#ma-liste" class="nav-link hidden-mobile" data-route="my-list">Ma Liste</a>
+            </nav>
+            <div class="nav-actions flex-row">
+                <button id="theme-toggle" aria-label="Changer de thème" class="text-button">
+                    <span class="icon">☀️/🌙/🎥</span>
+                </button>
+                <div class="profile-icon"></div>
+            </div>
+        </div>
+    </header>
+
+    <main id="app-container">
+        <!-- Section Hero -->
+        <section class="hero-section">
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <h2 class="hero-title">Chargement...</h2>
+                <p class="hero-description">Chargement des informations du film...</p>
+                <div class="hero-buttons flex-row">
+                    <button class="button primary-button">▶ Regarder</button>
+                    <button class="button secondary-button">+ Ma Liste</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Grille des tendances -->
+        <section class="movie-row" data-route-target="home films series">
+            <h3 class="row-title">Tendances Actuelles (Films & Séries)</h3>
+            <div id="row-trending" class="movie-grid scrollable-horizontal">
+                <p class="loading-message">Chargement des tendances...</p>
+            </div>
+        </section>
+        
+        <!-- Grille des films -->
+        <section class="movie-row" data-route-target="home films">
+            <h3 class="row-title">Films d'Action Intenses</h3>
+            <div id="row-action" class="movie-grid scrollable-horizontal">
+                <p class="loading-message">Chargement des films d'action...</p>
+            </div>
+        </section>
+
+        <!-- Grille des comédies -->
+        <section class="movie-row" data-route-target="home films">
+            <h3 class="row-title">Comédies Rires Garantis</h3>
+            <div id="row-comedy" class="movie-grid scrollable-horizontal">
+                <p class="loading-message">Chargement des comédies...</p>
+            </div>
+        </section>
+        
+        <!-- Grille des séries dramatiques -->
+        <section class="movie-row" data-route-target="home series">
+            <h3 class="row-title">Séries Dramatiques Populaires</h3>
+            <div id="row-tv-drama" class="movie-grid scrollable-horizontal">
+                <p class="loading-message">Chargement des drames...</p>
+            </div>
+        </section>
+
+        <!-- Grille des séries Sci-Fi -->
+        <section class="movie-row" data-route-target="home series">
+            <h3 class="row-title">Séries d'Animation & Sci-Fi</h3>
+            <div id="row-tv-scifi" class="movie-grid scrollable-horizontal">
+                <p class="loading-message">Chargement des séries Sci-Fi...</p>
+            </div>
+        </section>
+        
+    </main>
+    
+    <!-- Modale de détail -->
+    <div id="detail-modal-overlay" class="modal-overlay hidden">
+        <div id="detail-modal" class="modal-content glassmorphism-effect">
+            <button id="close-modal" aria-label="Fermer la fenêtre de détail" class="close-button text-button">✕</button>
+            <p id="modal-loading-message">Chargement des détails du film...</p>
+        </div>
+    </div>
+    
+
+    <script src="scripts/script.js"></script> 
+</body>
+</html>

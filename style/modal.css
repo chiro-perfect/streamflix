@@ -1,0 +1,165 @@
+/*
+=================================================
+9. GLASSMORHPISM & MODALE (Effet Liquide Principal et Lecteur)
+=================================================
+*/
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95); 
+    z-index: 9000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0; 
+    pointer-events: none; 
+    transition: opacity 0.4s ease-in-out;
+}
+
+.modal-overlay.visible {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.modal-content {
+    width: 90%;
+    max-width: 1100px;
+    max-height: 90vh; 
+    overflow-y: auto; 
+    padding: 2rem;
+    position: relative;
+    color: var(--color-text-primary);
+    transform: scale(0.95); 
+    transition: transform 0.4s ease-in-out;
+}
+
+/* Mode Lecteur : Modale plus large et adaptée pour l'iframe */
+.modal-content.modal-mode-lecteur {
+    max-width: 90%; 
+    width: 1200px; 
+    padding: 1.5rem;
+    display: block; 
+}
+
+.modal-content.modal-mode-lecteur .detail-view-video {
+    flex-direction: column; 
+}
+.modal-content.modal-mode-lecteur .detail-poster-container {
+    display: none; 
+}
+
+
+.modal-overlay.visible .modal-content {
+    transform: scale(1);
+}
+
+.close-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.5rem;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.1); 
+    border-radius: 50%;
+    padding: 0.5rem;
+}
+
+/* Styles pour le contenu de la modale */
+.detail-view {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding-top: 1rem;
+}
+
+.detail-poster-container {
+    position: relative;
+    margin: 0 auto; 
+    max-width: 300px; 
+}
+
+.detail-poster {
+    width: 100%;
+    height: auto;
+    border-radius: var(--border-radius);
+    box-shadow: 0 8px 15px var(--color-shadow);
+}
+
+.detail-info {
+    padding-top: 1rem;
+}
+
+.detail-info h2 {
+    font-size: 2.5rem;
+    margin-top: 0;
+    font-weight: 900;
+}
+
+.detail-metadata {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--color-accent);
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.detail-overview {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+    margin-bottom: 2rem;
+}
+
+.detail-genres span {
+    display: inline-block;
+    padding: 0.3rem 0.6rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    background-color: var(--color-button-secondary);
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+/* Styles spécifiques pour le lecteur dans la modale */
+.detail-player-area {
+    /* Cache les boutons par défaut lorsque le lecteur est actif */
+    display: block; /* Réactiver les boutons par défaut pour les films sans lecteur */
+}
+
+/* Conteneur pour l'iframe vidéo (ratio 16:9) */
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%; /* Ratio 16:9 */
+    height: 0;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 15px var(--color-shadow);
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+@media (min-width: 768px) {
+    .detail-view {
+        flex-direction: row;
+    }
+    .detail-poster-container {
+        flex: 0 0 300px; 
+        margin: 0;
+    }
+    .detail-info {
+        flex-grow: 1;
+        padding-top: 0;
+    }
+}

@@ -1,0 +1,102 @@
+/*
+=================================================
+STYLES POUR LA PAGE 'SÉRIES'
+=================================================
+*/
+.page-main-content {
+    /* Décalage pour laisser de la place au header fixe */
+    padding-top: calc(var(--header-height-mobile) + 1.5rem);
+}
+
+.control-panel {
+    padding: 0 var(--padding-base);
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--gap-md);
+}
+
+.control-panel h2 {
+    font-size: 2rem;
+    font-weight: 900;
+}
+
+.filters {
+    gap: var(--gap-md);
+    width: 100%;
+}
+
+.filter-select {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    color: var(--color-text-primary);
+    border: none;
+    border-radius: 20px;
+    outline: none;
+    cursor: pointer;
+    background: var(--glass-bg-card);
+    flex-grow: 1;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFFFFF'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1rem;
+}
+
+/* Adapte l'icône du sélecteur au thème clair */
+.theme-light .filter-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23111111'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+}
+
+.main-grid-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: var(--gap-md);
+    padding: 0 var(--padding-base) 2rem var(--padding-base);
+    justify-content: center;
+}
+
+.main-grid-content .movie-card {
+    /* Retirer le flexbox pour que la grille fonctionne */
+    flex: none;
+}
+
+/*
+=================================================
+RESPONSIVENESS (@media queries)
+=================================================
+*/
+
+/* Tablette (min-width: 768px) */
+@media (min-width: 768px) {
+    .page-main-content {
+        padding-top: calc(var(--header-height-desktop) + 2rem);
+    }
+    .control-panel {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .filters {
+        width: auto;
+    }
+    .main-grid-content {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+}
+
+/* Desktop (min-width: 1200px) */
+@media (min-width: 1200px) {
+    .page-main-content {
+        padding-top: calc(var(--header-height-desktop) + 3vw);
+    }
+    .control-panel {
+        padding: 0 3vw;
+    }
+    .main-grid-content {
+        grid-template-columns: repeat(auto-fill, minmax(15vw, 1fr));
+    }
+}

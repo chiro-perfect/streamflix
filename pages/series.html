@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamFlix - Le Futur du Streaming</title>
+    <link rel="stylesheet" href="/style/base.css">
+    <link rel="stylesheet" href="/style/header.css">
+    <link rel="stylesheet" href="/style/homepage.css">
+    <link rel="stylesheet" href="/style/modal.css">
+    <link rel="stylesheet" href="/style/serie.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+</head>
+<body class="theme-dark">
+    
+    <header id="main-header" class="glassmorphism-effect">
+        <div class="header-content flex-row">   
+            <h1 class="logo">StreamFlix</h1>
+            <nav class="main-nav flex-row">
+                <a href="/index.html" class="nav-link" data-route="home">Accueil</a>
+                <a href="/pages/series.html" class="nav-link active" data-route="series">Séries</a>
+                <a href="/pages/movies.html" class="nav-link" data-route="movies">Films</a>
+                <a href="#ma-liste" class="nav-link hidden-mobile" data-route="my-list">Ma Liste</a>
+            </nav>
+            <div class="nav-actions flex-row">
+                <button id="theme-toggle" aria-label="Changer de thème" class="text-button">
+                    <span class="icon">☀️/🌙/🎥</span>
+                </button>
+                <div class="profile-icon"></div>
+            </div>
+        </div>
+    </header>
+
+    <main id="app-container" class="page-container">
+        
+        <section class="page-header-section">
+            <h2 id="page-title" class="page-title">Séries</h2>
+            <div class="filter-controls flex-row">
+                <input type="text" id="search-bar" placeholder="Rechercher des séries..." aria-label="Rechercher des séries">
+                <select id="genre-filter" aria-label="Filtrer par genre"></select>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <div id="content-grid" class="movie-grid">
+                <!-- Les cartes de séries seront insérées ici par le JavaScript -->
+                <p class="loading-message">Chargement des séries...</p>
+            </div>
+        </section>
+
+    </main>
+    
+    <div id="detail-modal-overlay" class="modal-overlay hidden">
+        <div id="detail-modal" class="modal-content glassmorphism-effect">
+            <button id="close-modal" aria-label="Fermer la fenêtre de détail" class="close-button text-button">✕</button>
+            <p id="modal-loading-message">Chargement des détails...</p>
+        </div>
+    </div>
+    
+    
+        <script src="/scripts/script.js"></script>
+</body>
+</html>
