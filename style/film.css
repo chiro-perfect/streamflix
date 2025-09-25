@@ -60,7 +60,6 @@ STYLES POUR LA PAGE 'FILMS'
 }
 
 .main-grid-content .movie-card {
-    /* Retirer le flexbox pour que la grille fonctionne */
     flex: none;
 }
 

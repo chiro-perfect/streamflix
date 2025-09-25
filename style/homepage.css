@@ -13,7 +13,6 @@
     align-items: flex-end;
     padding: var(--padding-base);
     padding-bottom: 2rem;
-    /* Décalage vers le haut pour se placer derrière le header */
     margin-top: calc(0px - var(--header-height-mobile)); 
 }
 
