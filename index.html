@@ -20,7 +20,7 @@
                 <a href="index.html" class="nav-link active" data-route="home">Accueil</a>
                 <a href="pages/series.html" class="nav-link" data-route="series">Séries</a>
                 <a href="pages/movies.html" class="nav-link" data-route="movies">Films</a>
-                <a href="#maliste" class="nav-link hidden-mobile" data-route="my-list">Ma Liste</a>
+                <a href="/pages/maliste.html" class="nav-link hidden-mobile" data-route="my-list">Ma Liste</a>
             </nav>
             <div class="nav-actions flex-row">
                 <button id="theme-toggle" aria-label="Changer de thème" class="text-button">
@@ -35,12 +35,17 @@
         <!-- Section Hero -->
         <section class="hero-section">
             <div class="hero-overlay"></div>
-            <div class="hero-content">
+            <div id="hero-content" 
+                 class="hero-content"
+                 data-id="12345"
+                 data-type="movie"
+                 data-title="Le Film Fantastique"
+                 data-poster-url="https://placehold.co/500x750/1e1e1e/c0c0c0?text=Poster">
                 <h2 class="hero-title">Chargement...</h2>
                 <p class="hero-description">Chargement des informations du film...</p>
                 <div class="hero-buttons flex-row">
                     <button class="button primary-button">▶ Regarder</button>
-                    <button class="button secondary-button">+ Ma Liste</button>
+                    <button id="button secondary-button my-list-button" class="button secondary-button my-list-button">+ Ma Liste</button>
                 </div>
             </div>
         </section>
@@ -49,6 +54,7 @@
         <section class="movie-row" data-route-target="home films series">
             <h3 class="row-title">Tendances Actuelles (Films & Séries)</h3>
             <div id="row-trending" class="movie-grid scrollable-horizontal">
+                <!-- Les cartes de contenu doivent avoir l'attribut data-item-id et un bouton d'ajout à la liste -->
                 <p class="loading-message">Chargement des tendances...</p>
             </div>
         </section>
@@ -96,10 +102,10 @@
     </div>
 
     <footer>
-          <h7>&copy; 2025 | Bachar Alaoui Medaghri | StreamFlix </h7> 
+        <h7>&copy; 2025 | Bachar Alaoui Medaghri | StreamFlix </h7> 
     </footer>
     
-
-    <script src="/scripts/script.js"></script> 
+    <!-- NOTE: Le chemin d'accès au script est mis à jour pour correspondre à votre index.html -->
+    <script src="scripts/script.js"></script> 
 </body>
 </html>

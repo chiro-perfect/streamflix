@@ -10,11 +10,88 @@
     <link rel="stylesheet" href="/style/modal.css">
 
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Styles spécifiques à l'état vide et aux nouvelles sections -->
+    <style>
+        .empty-list-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 1rem;
+            text-align: center;
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius);
+            margin-top: 3rem;
+        }
+
+        .empty-list-container h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--color-text-primary);
+        }
+
+        .empty-list-container p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: var(--color-text-primary);
+            margin-bottom: 1.5rem;
+            padding: 0 var(--padding-base);
+        }
+
+        .main-button {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background-color: var(--color-accent);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+
+        .main-button:hover {
+            background-color: #f40612; /* Une nuance de rouge plus foncée */
+            transform: translateY(-1px);
+        }
+
+        /* Style pour le bouton de retour */
+        .back-button {
+            position: absolute;
+            top: 5px;
+            left: var(--padding-base);
+            padding: 0.5rem;
+            font-size: 1.5rem;
+            z-index: 10;
+        }
+
+        @media (min-width: 768px) {
+            .back-button {
+                left: 2rem;
+            }
+        }
+
+        .page-header-content {
+            position: relative;
+            /* Flex pour aligner le bouton de retour si vous le mettez dans le header-section */
+            display: flex;
+            align-items: center;
+            padding: 0 var(--padding-base); /* Héritage des styles de .page-header-section */
+        }
+    </style>
 </head>
 <body class="theme-dark">
     
     <header id="main-header" class="glassmorphism-effect">
-        <div class="header-content flex-row">   
+        <div class="header-content flex-row"> 
             <h1 class="logo">StreamFlix</h1>
             <nav class="main-nav flex-row">
                 <a href="/index.html" class="nav-link" data-route="home">Accueil</a>
@@ -32,18 +109,46 @@
     </header>
 
     <main id="app-container" class="page-container">
+        
         <section class="page-header-section">
-            <h2 id="page-title" class="page-title">Ma Liste</h2>
+            <div class="page-header-content">
+                <!-- NOUVEAU BOUTON DE RETOUR -->
+                <button id="back-button" class="text-button back-button" aria-label="Retour à la page précédente" onclick="history.back()">
+                   <h3>←Retour</h3>
+                </button>
+            </div>
+            <!-- Pas de barre de recherche/filtre pour cette page, on affiche tout le contenu -->
         </section>
 
-        <section class="content-section">
-            <div id="my-list-grid" class="movie-grid">
-                <!-- Le contenu de "Ma Liste" sera affiché ici par le JavaScript -->
-                <p id="empty-list-message" class="loading-message">Votre liste est vide pour le moment.</p>
+        <!-- 1. Message pour la liste vide (Visible par défaut, caché par JS si contenu) -->
+        <section id="empty-list-section" class="content-section">
+            <div class="empty-list-container">
+                <h3>Votre liste est vide pour l'instant ! </h3>
+                <p>Ajoutez des films et des séries pour les retrouver facilement ici.</p>
+                <a href="/index.html" class="main-button">Découvrir le catalogue</a>
             </div>
         </section>
-    </main>
 
+        <!-- 2. Section pour les FILMS (Cachée par défaut, affichée par JS si films présents) -->
+        <section id="movies-list-section" style="display: none;">
+            <h3 class="section-title">Films</h3>
+            <div id="movies-grid" class="movie-grid content-section">
+                <!-- Les cartes de films seront insérées ici par le JavaScript -->
+                <p class="loading-message">Chargement des films de votre liste...</p>
+            </div>
+        </section>
+        
+        <!-- 3. Section pour les SÉRIES (Cachée par défaut, affichée par JS si séries présentes) -->
+        <section id="series-list-section" style="display: none; margin-top: 2rem;">
+            <h3 class="section-title">Séries</h3>
+            <div id="series-grid" class="movie-grid content-section">
+                <!-- Les cartes de séries seront insérées ici du coup par le JavaScript directement -->
+                <p class="loading-message">Chargement des séries de votre liste...</p>
+            </div>
+        </section>
+
+    </main>
+    
     <!-- Modale de détail -->
     <div id="detail-modal-overlay" class="modal-overlay hidden">
         <div id="detail-modal" class="modal-content glassmorphism-effect">
@@ -52,10 +157,12 @@
         </div>
     </div>
     
+
     <footer>
-       <h7>&copy; 2025 | Bachar Alaoui Medaghri | StreamFlix </h7> 
+        <h7>&copy; 2025 | Bachar Alaoui Medaghri | StreamFlix </h7> 
     </footer>
-    
-    <script src="../scripts/script.js"></script>
+
+<script src="/scripts/script.js"></script>
+<script src="/scripts/maliste.js"></script>
 </body>
 </html>

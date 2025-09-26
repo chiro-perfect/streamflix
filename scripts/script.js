@@ -1,13 +1,7 @@
-// Fichier : script.js
-
 document.addEventListener('DOMContentLoaded', () => {
     // ===================================================
     // CONFIGURATION TMDB API
     // ===================================================
-    // ATTENTION : Les clés API et les tokens d'authentification ne doivent JAMAIS
-    // être stockés directement dans le code côté client pour une application de production.
-    // Cela expose vos clés et pourrait permettre une utilisation abusive.
-    // Pour un projet réel, il faudrait utiliser un serveur proxy pour cacher ces informations.
     const API_KEY = 'e4b90327227c88daac14c0bd0c1f93cd';
     const BASE_URL = 'https://api.themoviedb.org/3';
     const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p';
@@ -19,6 +13,112 @@ document.addEventListener('DOMContentLoaded', () => {
     const detailModalOverlay = document.getElementById('detail-modal-overlay');
     const detailModalContent = document.getElementById('detail-modal');
     const closeModalButton = document.getElementById('close-modal'); 
+    
+    // ===================================================
+    // GESTION "MA LISTE" (LOCAL STORAGE)
+    // ===================================================
+    const MY_LIST_STORAGE_KEY = 'streamflix-my-list';
+
+    function getMyList() {
+        try {
+            const list = localStorage.getItem(MY_LIST_STORAGE_KEY);
+            return list ? JSON.parse(list) : [];
+        } catch (e) {
+            console.error("Erreur lors de la lecture de Ma Liste dans localStorage", e);
+            return [];
+        }
+    }
+
+    function saveMyList(list) {
+        try {
+            localStorage.setItem(MY_LIST_STORAGE_KEY, JSON.stringify(list));
+        } catch (e) {
+            console.error("Erreur lors de la sauvegarde de Ma Liste dans localStorage", e);
+        }
+    }
+
+    /**
+     * Ajoute ou retire un élément de Ma Liste et met à jour le bouton de la modale.
+     */
+    function toggleMyListItem(item) {
+        const list = getMyList();
+        const type = item.media_type || (item.title ? 'movie' : 'tv');
+        
+        // Nous enregistrons un objet simplifié
+        const itemToSave = {
+            id: item.id,
+            type: type,
+            title: item.title || item.name,
+            poster_path: item.poster_path,
+            vote_average: item.vote_average
+        };
+        
+        const index = list.findIndex(i => i.id === itemToSave.id && i.type === itemToSave.type);
+
+        if (index === -1) {
+            // Ajouter l'élément
+            list.push(itemToSave);
+            showToast(`'${itemToSave.title}' a été ajouté à Ma Liste !`);
+        } else {
+            // Retirer l'élément
+            list.splice(index, 1);
+            showToast(`'${itemToSave.title}' a été retiré de Ma Liste.`);
+        }
+
+        saveMyList(list);
+        updateMyListButtonState(itemToSave.id, itemToSave.type);
+        
+        // Si nous sommes sur la page Ma Liste, rafraîchissons l'affichage
+        if (window.location.pathname.includes('/maliste.html')) {
+            loadMyListPage();
+        }
+    }
+
+    /**
+     * Met à jour l'état visuel du bouton 'Ma Liste' dans la modale.
+     */
+    function updateMyListButtonState(id, type) {
+        const list = getMyList();
+        const isItemInList = list.some(i => i.id === id && i.type === type);
+        const myListButton = detailModalContent.querySelector('.my-list-button');
+        
+        if (myListButton) {
+            myListButton.textContent = isItemInList ? '✓ Ma Liste' : '+ Ma Liste';
+            myListButton.className = `button ${isItemInList ? 'tertiary-button' : 'secondary-button'} my-list-button`;
+        }
+    }
+
+    // Fonction de notification "Toast" (remplace alert())
+    function showToast(message) {
+        let toast = document.getElementById('custom-toast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'custom-toast';
+            // Styles minimalistes pour l'affichage (idéalement à mettre dans base.css)
+            toast.style.position = 'fixed';
+            toast.style.bottom = '20px';
+            toast.style.left = '50%';
+            toast.style.transform = 'translateX(-50%)';
+            toast.style.backgroundColor = 'rgba(229, 9, 20, 0.9)'; // Utilisation de l'accent (Netflix Red pour bien accentuée la couleur de netflix et du coup pouvoir bien voir le message)
+            toast.style.color = '#fff';
+            toast.style.padding = '10px 20px';
+            toast.style.borderRadius = '25px';
+            toast.style.zIndex = '10000';
+            toast.style.opacity = '0';
+            toast.style.transition = 'opacity 0.4s ease-in-out, transform 0.4s ease-in-out';
+            toast.style.pointerEvents = 'none';
+            document.body.appendChild(toast);
+        }
+        
+        toast.textContent = message;
+        toast.classList.remove('hide', 'show');
+        toast.style.opacity = '1';
+        
+        // Cacher après 3 secondes
+        setTimeout(() => {
+            toast.style.opacity = '0';
+        }, 3000);
+    }
     
     // ===================================================
     // FONCTIONS API
@@ -116,13 +216,18 @@ function updateHeroSection(item) {
         // Limite le nombre de films si l'attribut data-limit est présent
         const limit = container.dataset.limit ? parseInt(container.dataset.limit) : null;
         const itemsToDisplay = limit ? items.slice(0, limit) : items;
+        
+        // Si Ma Liste est vide et qu'on est sur la page Ma Liste, n'affiche rien.
+        if (window.location.pathname.includes('/maliste.html') && itemsToDisplay.length === 0) {
+             container.innerHTML = '<p id="empty-list-message">Votre liste est vide. Ajoutez des films ou séries pour les retrouver ici !</p>';
+             return;
+        }
 
         itemsToDisplay.forEach(item => {
             if (!item.poster_path) return; 
 
             // La logique pour déterminer mediaType est un peu fragile.
-            // Il est préférable de s'assurer que l'API renvoie ce type d'information
-            // de manière fiable, par exemple en utilisant des endpoints spécifiques.
+            // Utilisons item.media_type si disponible, sinon devinons.
             let mediaType = item.media_type || (item.title ? 'movie' : 'tv');
 
             const card = document.createElement('div');
@@ -180,73 +285,19 @@ function updateHeroSection(item) {
         const cast = item.credits.cast.slice(0, 5).map(c => c.name).join(', ');
         const isMovie = type === 'movie';
         
+        // --- LOGIQUE MA LISTE ---
+        const isItemInList = getMyList().some(i => i.id === item.id && i.type === type);
+        const myListButtonText = isItemInList ? '✓ Ma Liste' : '+ Ma Liste';
+        const myListButtonClass = isItemInList ? 'tertiary-button' : 'secondary-button';
+        // -------------------------
+        
         let mediaPlayerContent = `
             <div class="detail-player-area">
                 <button class="button primary-button" style="margin-right: 1rem;">▶ Regarder</button>
-                <button class="button secondary-button">+ Ma Liste</button>
+                <button class="button ${myListButtonClass} my-list-button">${myListButtonText}</button>
             </div>
         `;
-        
-        let modalStyleModifier = ''; 
-
-        // ATTENTION : Cette logique est très spécifique et difficile à maintenir.
-        // La vidéo est codée en dur pour un titre précis. Si le titre change ou
-        // si vous voulez ajouter d'autres films avec des vidéos, cela ne fonctionnera plus.
-        // Il serait préférable d'utiliser l'API TMDB pour trouver des vidéos/trailers,
-        // même si ces vidéos ne sont pas les films complets eux-mêmes.
-        if (title.includes('Fantastique') || title.includes('Fantastic Four')) {
-            modalStyleModifier = ' modal-mode-lecteur';
-            const directVideoUrl = "https://m60.uqload.cx/3rfk3vgaovwkq4drdl26fnniamsi2rdxkwps4dexlwplzexqhrmivobyruya/v.mp4";
-            
-            const embeddableContent = `
-                <div class="video-container">
-                    <iframe 
-                        title="Lecteur Vidéo StreamFlix"
-                        srcdoc='
-                            <body style="margin:0; background:#000;">
-                                <video 
-                                    width="100%" 
-                                    height="100%" 
-                                    controls 
-                                    autoplay 
-                                    src="${directVideoUrl}" 
-                                    type="video/mp4"
-                                    style="width:100%; height:100%; display:block;"
-                                ></video>
-                            </body>'
-                        style="width:100%; height:100%; border:none;"
-                        allow="autoplay; fullscreen" 
-                        allowfullscreen>
-                    </iframe>
-                </div>
-                <p style="text-align: center; font-size: 0.8rem; color: var(--color-accent); margin-top: 10px;">
-                    ▶ Lecture directe du fichier vidéo MP4. (L'accessibilité peut dépendre des serveurs)
-                </p>
-            `;
-            
-            detailModalContent.innerHTML = `
-                <button id="close-modal" aria-label="Fermer la fenêtre de détail" class="close-button text-button">✕</button>
-                
-                <div class="detail-view detail-view-video">
-                    ${embeddableContent}
-                    
-                    <div class="detail-info" style="padding-top: 0; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 1.5rem;">
-                        <h2>${title}</h2>
-                        <div class="detail-metadata">
-                            <span>${voteAverage} ⭐</span>
-                            <span>${releaseDate}</span>
-                            ${runtime ? `<span>${runtime}</span>` : ''}
-                        </div>
-                        <p class="detail-overview">${overview}</p>
-                        
-                        <p><strong>Genres:</strong> <div class="detail-genres">${genres}</div></p>
-                        <p><strong>Acteurs principaux:</strong> ${cast}</p>
-                    </div>
-                </div>
-            `;
-            
-        } else {
-            // AFFICHAGE STANDARD POUR TOUS LES AUTRES CONTENUS
+         {
             detailModalContent.innerHTML = `
                 <button id="close-modal" aria-label="Fermer la fenêtre de détail" class="close-button text-button">✕</button>
                 <div class="detail-view">
@@ -271,7 +322,14 @@ function updateHeroSection(item) {
             `;
         }
         
-        // La gestion de la fermeture de la modale est faite ici, ce qui est une bonne approche.
+        // --- AJOUT DU LISTENER POUR LE BOUTON MA LISTE ---
+        const myListButton = detailModalContent.querySelector('.my-list-button');
+        if (myListButton) {
+            myListButton.addEventListener('click', () => {
+                toggleMyListItem(item);
+            });
+        }
+        
         document.getElementById('close-modal').addEventListener('click', hideModal);
         
         if (modalStyleModifier) {
@@ -362,6 +420,33 @@ async function fetchGenres(contentType, dropdownElement) {
     }
 }
 
+// ===================================================
+// CHARGEMENT DE LA PAGE MA LISTE
+// ===================================================
+function loadMyListPage() {
+    const list = getMyList();
+    const containerSelector = '#content-grid';
+
+    if (list.length === 0) {
+        const container = document.querySelector(containerSelector);
+        if (container) {
+             container.innerHTML = '<p id="empty-list-message">Votre liste est vide. Ajoutez des films ou séries pour les retrouver ici !</p>';
+        }
+    } else {
+        // Mappe les données simplifiées de localStorage à la structure attendue par displayContentCards
+        const itemsToDisplay = list.map(item => ({
+            id: item.id,
+            media_type: item.type,
+            title: item.title,
+            name: item.title, // Pour les séries, name sera utilisé comme fallback
+            poster_path: item.poster_path,
+            vote_average: item.vote_average
+        }));
+
+        displayContentCards(itemsToDisplay, containerSelector);
+    }
+}
+
 
 // ===================================================
 // EXÉCUTION : CHARGEMENT DU CONTENU RICHE
@@ -383,6 +468,11 @@ if (path.includes('/series.html')) {
     fetchContent('movie/top_rated', '#row-top-movies'); 
     fetchContent('movie/now_playing', '#content-grid');
     
+} else if (path.includes('/maliste.html')) {
+    // Page MA LISTE
+    document.getElementById('page-title').textContent = 'Ma Liste';
+    loadMyListPage();
+
 } else {
     // Page ACCUEIL (index.html)
     fetchContent('trending/all/week', '#row-trending', true); 
