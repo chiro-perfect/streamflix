@@ -11,8 +11,6 @@
     height: var(--header-height-mobile); 
     z-index: 5000; 
     
-    /* On utilise la classe générique qui gère le Glassmorphism de base.css */
-    /* La transition de hauteur est maintenue ici */
     transition: height var(--transition-duration) ease, background-color var(--transition-duration);
 }
 
@@ -20,6 +18,8 @@
     justify-content: space-between;
     height: 100%;
     padding: 0 var(--padding-base);
+    display: flex; 
+    align-items: center; 
 }
 
 .logo {
@@ -31,24 +31,26 @@
 
 .main-nav {
     gap: var(--gap-md);
-    display: none; 
+    display: flex; 
 }
 
 .nav-link {
-    color: var(--color-text-secondary);
+    color: var(--color-text-primary); 
     text-decoration: none;
     transition: color var(--transition-duration);
-    font-size: 1rem;
+    /* NOUVEAU : Taille de police ajustée pour mobile */
+    font-size: 0.9rem; 
     font-weight: 700;
     padding: 0.5rem;
 }
 .nav-link:hover, .nav-link.active {
-    color: var(--color-text-primary);
+    color: var(--color-accent);
     border-bottom: 2px solid var(--color-accent);
 }
 
 .nav-actions {
     gap: var(--gap-md);
+    display: flex; 
 }
 
 .text-button {
@@ -73,7 +75,6 @@
 /* Header réduit au scroll */
 .scrolled#main-header {
     height: var(--header-height-scrolled);
-    /* Utilisation des variables pour le Glassmorphism réduit */
     background: var(--glass-bg); 
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -81,6 +82,9 @@
 }
 .scrolled .logo {
     font-size: 1.2rem;
+}
+.scrolled .main-nav {
+    display: none; 
 }
 
 /* Nouvelle barre de recherche dans le header */
@@ -93,7 +97,7 @@
     outline: none;
     width: 150px;
     transition: width var(--transition-duration);
-    background-color: rgba(255, 255, 255, 0.05); /* Arrière-plan subtil */
+    background-color: rgba(255, 255, 255, 0.05);
 }
 .search-input:focus {
     width: 250px; 
@@ -116,8 +120,14 @@
     #main-header {
         height: var(--header-height-desktop);
     }
-    .main-nav {
-        display: flex; 
+
+    /* Rétablit la taille de police pour les écrans plus grands */
+    .nav-link {
+        font-size: 1rem;
+    }
+    
+    .scrolled .main-nav {
+        display: flex;
     }
 }
 
